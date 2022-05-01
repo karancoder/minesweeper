@@ -1,0 +1,42 @@
+.cell {
+    position: relative;
+}
+
+.cover {
+    width: 40px;
+    height: 40px;
+    background: sienna;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    border: 2px solid brown;
+    align-items: center;
+    cursor: pointer;
+}
+
+.uncover {
+    display: none;
+}
+
+.break {
+    animation-name: example;
+    animation-duration: 2s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes example {
+    0% {
+        transform: translate(0, 0);
+    }
+    15% {
+        transform: translate(-20%, -50%) scale(90%) rotateZ(10deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-20%, 90%) scale(20%) rotateZ(30deg);
+        opacity: 0;
+    }
+}
