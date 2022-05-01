@@ -69,6 +69,7 @@ const Board = () => {
 };
 
 export default Board;
+
 function revelationBFSFromGivesCell(
     x,
     y,
