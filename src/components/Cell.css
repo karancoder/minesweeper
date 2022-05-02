@@ -36,7 +36,70 @@
         opacity: 0.8;
     }
     100% {
-        transform: translate(-20%, 90%) scale(20%) rotateZ(30deg);
+        transform: translate(-30%, 90%) scale(20%) rotateZ(30deg);
+        opacity: 0;
+    }
+}
+
+.break1 {
+    animation-name: example1;
+    animation-duration: 2s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes example1 {
+    0% {
+        transform: translate(0, 0);
+    }
+    15% {
+        transform: translate(-30%, -50%) scale(90%) rotateZ(5deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, 70%) scale(20%) rotateZ(15deg);
+        opacity: 0;
+    }
+}
+
+.break2 {
+    animation-name: example2;
+    animation-duration: 2s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes example2 {
+    0% {
+        transform: translate(0, 0);
+    }
+    15% {
+        transform: translate(20%, -50%) scale(90%) rotateZ(-10deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(30%, 90%) scale(20%) rotateZ(-30deg);
+        opacity: 0;
+    }
+}
+
+.break3 {
+    animation-name: example3;
+    animation-duration: 2s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes example3 {
+    0% {
+        transform: translate(0, 0);
+    }
+    15% {
+        transform: translate(30%, -50%) scale(90%) rotateZ(-5deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(50%, 70%) scale(20%) rotateZ(-15deg);
         opacity: 0;
     }
 }

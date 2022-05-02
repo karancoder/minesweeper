@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { randomNum } from "../utils/createBoard";
 import "./Cell.css";
 
 const Cell = ({ details, updateFlag, revealCellsStartingAtGivenCell }) => {
@@ -10,7 +11,17 @@ const Cell = ({ details, updateFlag, revealCellsStartingAtGivenCell }) => {
         if (details.revealed) {
             setTimeout(() => {
                 setRevealed(() => true);
-                setBreakClass(() => "break");
+                const animationClassList = [
+                    "break",
+                    "break1",
+                    "break2",
+                    "break3",
+                ];
+                let randomAnimClass =
+                    animationClassList[
+                        randomNum(0, animationClassList.length - 1)
+                    ];
+                setBreakClass(() => randomAnimClass);
             }, details.revealTimeout);
         } else {
             setCoverClass(() => "cover");
@@ -23,7 +34,8 @@ const Cell = ({ details, updateFlag, revealCellsStartingAtGivenCell }) => {
         <div className="cell">
             <div style={style.cellStyle}>
                 {/* {details.value !== 0 && details.value} */}
-                {revealed ? details.value : ""}
+                {/* {revealed ? details.value : ""} */}
+                {details.value}
             </div>
             <div
                 onAnimationEnd={() => {

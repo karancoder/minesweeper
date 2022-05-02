@@ -24,10 +24,6 @@ const Board = () => {
 
     const revealCellsStartingAtGivenCell = (x, y) => {
         let newBoard = JSON.parse(JSON.stringify(grid));
-        function revealCellWithTimeout(newBoard, x, y, revealTimeout) {
-            newBoard[x][y].revealed = true;
-            newBoard[x][y].revealTimeout = revealTimeout;
-        }
         if (newBoard[x][y].value === "X") {
             alert("mine found");
             revealCellWithTimeout(newBoard, x, y, 200);
@@ -69,6 +65,11 @@ const Board = () => {
 };
 
 export default Board;
+
+function revealCellWithTimeout(newBoard, x, y, revealTimeout) {
+    newBoard[x][y].revealed = true;
+    newBoard[x][y].revealTimeout = revealTimeout;
+}
 
 function revelationBFSFromGivesCell(
     x,

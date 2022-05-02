@@ -112,4 +112,4 @@ function allPossibleNeighbours() {
 
 export default createBoard;
 
-export { getNeighboursRelativeIndices };
+export { getNeighboursRelativeIndices, randomNum };
