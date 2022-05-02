@@ -5,12 +5,18 @@ import Cell from "./Cell";
 
 const Board = () => {
     const [grid, setGrid] = useState([]);
+    const [numberOfMines, setNumberOfMines] = useState(-1);
+    const [numberOfUnrevealedCells, setNumberOfUnrevealedCells] = useState(0);
 
     useEffect(() => {
         function freshBoard() {
             const newBoard = createBoard(10, 10, 5);
             console.log(newBoard);
             setGrid(newBoard.board);
+            setNumberOfMines((prevNumberOfMines) => 5);
+            setNumberOfUnrevealedCells(
+                (prevNumberOfUnrevealedCells) => 10 * 10
+            );
         }
         freshBoard();
     }, []);
@@ -28,16 +34,26 @@ const Board = () => {
             alert("mine found");
             revealCellWithTimeout(newBoard, x, y, 200);
         } else {
-            revelationBFSFromGivesCell(
+            let noOfNewlyRevealedCells = revelationBFSFromGivesCell(
                 x,
                 y,
                 grid,
                 revealCellWithTimeout,
                 newBoard
             );
+            setNumberOfUnrevealedCells(
+                (prevNumberOfUnrevealedCells) =>
+                    prevNumberOfUnrevealedCells - noOfNewlyRevealedCells
+            );
         }
         setGrid((prevBoard) => newBoard);
     };
+
+    useEffect(() => {
+        if (numberOfUnrevealedCells === numberOfMines) {
+            alert("You won!");
+        }
+    }, [numberOfUnrevealedCells]);
 
     if (!grid) {
         return <div> Loading...</div>;
@@ -90,12 +106,17 @@ function revelationBFSFromGivesCell(
         .map(() => Array(grid[0].length).fill(false));
     visited[x][y] = true;
     let i = 0;
+    let numberOfNewRevealedCells = 0;
     while (newFrontier.length) {
         i += 1;
         for (let cell of newFrontier) {
+            if (!grid[cell.x][cell.y].revealed) {
+                numberOfNewRevealedCells += 1;
+            }
             revealCellWithTimeout(newBoard, cell.x, cell.y, i * 200);
         }
         prevFrontier = newFrontier;
         newFrontier = revealOnce(newBoard, prevFrontier, visited);
     }
+    return numberOfNewRevealedCells;
 }
