@@ -1,7 +1,25 @@
 import React, { useEffect, useState } from "react";
 import createBoard from "../utils/createBoard";
 import revealOnce from "../utils/reveal";
+import styled from "styled-components";
 import Cell from "./Cell";
+
+const Grid = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
+const LiveScoreBoard = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const LiveScoreItems = styled.div`
+    width: 200px;
+`;
 
 const Board = () => {
     const [grid, setGrid] = useState([]);
@@ -80,26 +98,38 @@ const Board = () => {
     if (!grid) {
         return <div> Loading...</div>;
     }
-    return grid.map((singleRow, idx1) => {
-        return (
-            <div style={{ display: "flex" }} key={idx1}>
-                {singleRow.map((cell, idx2) => {
+    return (
+        <>
+            <LiveScoreBoard>
+                <LiveScoreItems>
+                    {winConditions.numberOfUnrevealedCells - mines.length}
+                </LiveScoreItems>
+                <LiveScoreItems>{1}</LiveScoreItems>
+            </LiveScoreBoard>
+            <Grid>
+                {grid.map((singleRow, idx1) => {
                     return (
-                        <div>
-                            <Cell
-                                details={cell}
-                                updateFlag={updateFlag}
-                                revealCellsStartingAtGivenCell={
-                                    revealCellsStartingAtGivenCell
-                                }
-                                key={idx2}
-                            />
+                        <div style={{ display: "flex" }} key={idx1}>
+                            {singleRow.map((cell, idx2) => {
+                                return (
+                                    <div>
+                                        <Cell
+                                            details={cell}
+                                            updateFlag={updateFlag}
+                                            revealCellsStartingAtGivenCell={
+                                                revealCellsStartingAtGivenCell
+                                            }
+                                            key={idx2}
+                                        />
+                                    </div>
+                                );
+                            })}
                         </div>
                     );
                 })}
-            </div>
-        );
-    });
+            </Grid>
+        </>
+    );
 };
 
 export default Board;
