@@ -6,17 +6,21 @@ import Cell from "./Cell";
 const Board = () => {
     const [grid, setGrid] = useState([]);
     const [mines, setMines] = useState([]);
-    const [numberOfUnrevealedCells, setNumberOfUnrevealedCells] = useState(-1);
+    const [winConditions, setWinConditions] = useState({
+        numberOfUnrevealedCells: -1,
+        timeoutDurationForWin: 0,
+    });
 
     useEffect(() => {
         function freshBoard() {
             const newBoard = createBoard(10, 10, 5);
             console.log(newBoard);
-            setGrid((prevBoard) => newBoard.board);
-            setMines((prevMines) => newBoard.mineLocation);
-            setNumberOfUnrevealedCells(
-                (prevNumberOfUnrevealedCells) => 10 * 10
-            );
+            setGrid((_prevBoard) => newBoard.board);
+            setMines((_prevMines) => newBoard.mineLocation);
+            setWinConditions((_prevWinConditions) => ({
+                numberOfUnrevealedCells: 10 * 10,
+                timeoutDurationForWin: 1,
+            }));
         }
         freshBoard();
     }, []);
@@ -24,37 +28,54 @@ const Board = () => {
     const updateFlag = (e, x, y) => {
         e.preventDefault();
         let newBoard = JSON.parse(JSON.stringify(grid));
-        newBoard[x][y].flagged = true;
-        setGrid((prevBoard) => newBoard);
+        if (newBoard[x][y].flagged) {
+            newBoard[x][y].flagged = false;
+        } else {
+            newBoard[x][y].flagged = true;
+        }
+        setGrid((_prevBoard) => newBoard);
     };
 
     const revealCellsStartingAtGivenCell = (x, y) => {
         let newBoard = JSON.parse(JSON.stringify(grid));
+        console.log(newBoard, x, y);
         if (newBoard[x][y].value === "X") {
-            alert("mine found");
+            // alert("mine found");
+            revealAllMines(grid, mines, revealCellWithTimeout, newBoard);
             revealCellWithTimeout(newBoard, x, y, 200);
         } else {
-            let noOfNewlyRevealedCells = revelationBFSFromGivesCell(
+            let resultFromBFS = revelationBFSFromGivesCell(
                 x,
                 y,
                 grid,
                 revealCellWithTimeout,
                 newBoard
             );
-            setNumberOfUnrevealedCells(
-                (prevNumberOfUnrevealedCells) =>
-                    prevNumberOfUnrevealedCells - noOfNewlyRevealedCells
-            );
+            let noOfNewlyRevealedCells = resultFromBFS.numberOfNewRevealedCells;
+            let timeoutDuration = resultFromBFS.timeoutDuration;
+            setWinConditions((prevWinConditions) => ({
+                numberOfUnrevealedCells:
+                    prevWinConditions.numberOfUnrevealedCells -
+                    noOfNewlyRevealedCells,
+                timeoutDurationForWin: timeoutDuration,
+            }));
         }
-        setGrid((prevBoard) => newBoard);
+        setGrid((_prevBoard) => newBoard);
     };
 
     useEffect(() => {
         let numberOfMines = mines.length;
-        if (numberOfUnrevealedCells === numberOfMines) {
-            alert("You won!");
+        if (winConditions.numberOfUnrevealedCells === numberOfMines) {
+            setTimeout(() => {
+                alert("Won!");
+            }, winConditions.timeoutDurationForWin * 200);
         }
-    }, [mines.length, numberOfUnrevealedCells]);
+    }, [
+        mines,
+        mines.length,
+        winConditions.numberOfUnrevealedCells,
+        winConditions.timeoutDurationForWin,
+    ]);
 
     if (!grid) {
         return <div> Loading...</div>;
@@ -88,6 +109,20 @@ function revealCellWithTimeout(newBoard, x, y, revealTimeout) {
     newBoard[x][y].revealTimeout = revealTimeout;
 }
 
+function revealAllMines(grid, mines, revealCellWithTimeout, newBoard) {
+    let i = 0;
+    for (let cell of mines) {
+        i += 1;
+        if (!grid[cell.x][cell.y].revealed) {
+            revealCellWithTimeout(newBoard, cell.x, cell.y, i * 200);
+        }
+    }
+    i += 1;
+    setTimeout(() => {
+        alert("Mine Found. Game Over!");
+    }, i * 200);
+}
+
 function revelationBFSFromGivesCell(
     x,
     y,
@@ -113,11 +148,15 @@ function revelationBFSFromGivesCell(
         for (let cell of newFrontier) {
             if (!grid[cell.x][cell.y].revealed) {
                 numberOfNewRevealedCells += 1;
+                revealCellWithTimeout(newBoard, cell.x, cell.y, i * 200);
             }
-            revealCellWithTimeout(newBoard, cell.x, cell.y, i * 200);
         }
         prevFrontier = newFrontier;
         newFrontier = revealOnce(newBoard, prevFrontier, visited);
     }
-    return numberOfNewRevealedCells;
+    i += 1;
+    return {
+        numberOfNewRevealedCells: numberOfNewRevealedCells,
+        timeoutDuration: i,
+    };
 }

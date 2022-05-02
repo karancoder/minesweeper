@@ -41,7 +41,10 @@ function addBombsToBoard(bombs, row, col, board, mineLocation) {
 
         if (board[x][y].value === 0) {
             board[x][y].value = "X";
-            mineLocation.push([x, y]);
+            mineLocation.push({
+                x: x,
+                y: y
+            });
             bombsCount++;
         }
     }

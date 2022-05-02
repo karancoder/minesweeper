@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { randomNum } from "../utils/createBoard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFlag } from "@fortawesome/free-solid-svg-icons";
 import "./Cell.css";
 
 const Cell = ({ details, updateFlag, revealCellsStartingAtGivenCell }) => {
@@ -47,7 +49,13 @@ const Cell = ({ details, updateFlag, revealCellsStartingAtGivenCell }) => {
                 onClick={() =>
                     revealCellsStartingAtGivenCell(details.x, details.y)
                 }
-            ></div>
+            >
+                {details.flagged ? (
+                    <FontAwesomeIcon style={{ color: "red" }} icon={faFlag} />
+                ) : (
+                    ""
+                )}
+            </div>
         </div>
     );
 };
