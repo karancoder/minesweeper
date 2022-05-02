@@ -3,22 +3,13 @@ import createBoard from "../utils/createBoard";
 import revealOnce from "../utils/reveal";
 import styled from "styled-components";
 import Cell from "./Cell";
+import LiveScoreBoard from "./LiveScoreBoard";
 
 const Grid = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-`;
-
-const LiveScoreBoard = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-const LiveScoreItems = styled.div`
-    width: 200px;
 `;
 
 const Board = () => {
@@ -100,12 +91,13 @@ const Board = () => {
     }
     return (
         <>
-            <LiveScoreBoard>
-                <LiveScoreItems>
-                    {winConditions.numberOfUnrevealedCells - mines.length}
-                </LiveScoreItems>
-                <LiveScoreItems>{1}</LiveScoreItems>
-            </LiveScoreBoard>
+            <LiveScoreBoard
+                tilesRemaining={
+                    winConditions.numberOfUnrevealedCells - mines.length
+                }
+                timeSpent={1}
+            />
+
             <Grid>
                 {grid.map((singleRow, idx1) => {
                     return (
