@@ -37,7 +37,7 @@ const Cell = ({ details, updateFlag, revealCellsStartingAtGivenCell }) => {
             <div style={style.cellStyle}>
                 {/* {details.value !== 0 && details.value} */}
                 {/* {revealed ? details.value : ""} */}
-                {details.value}
+                {details.value !== 0 ? details.value : ""}
             </div>
             <div
                 onAnimationEnd={() => {
