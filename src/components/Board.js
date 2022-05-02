@@ -5,15 +5,15 @@ import Cell from "./Cell";
 
 const Board = () => {
     const [grid, setGrid] = useState([]);
-    const [numberOfMines, setNumberOfMines] = useState(-1);
-    const [numberOfUnrevealedCells, setNumberOfUnrevealedCells] = useState(0);
+    const [mines, setMines] = useState([]);
+    const [numberOfUnrevealedCells, setNumberOfUnrevealedCells] = useState(-1);
 
     useEffect(() => {
         function freshBoard() {
             const newBoard = createBoard(10, 10, 5);
             console.log(newBoard);
-            setGrid(newBoard.board);
-            setNumberOfMines((prevNumberOfMines) => 5);
+            setGrid((prevBoard) => newBoard.board);
+            setMines((prevMines) => newBoard.mineLocation);
             setNumberOfUnrevealedCells(
                 (prevNumberOfUnrevealedCells) => 10 * 10
             );
@@ -50,10 +50,11 @@ const Board = () => {
     };
 
     useEffect(() => {
+        let numberOfMines = mines.length;
         if (numberOfUnrevealedCells === numberOfMines) {
             alert("You won!");
         }
-    }, [numberOfUnrevealedCells]);
+    }, [mines.length, numberOfUnrevealedCells]);
 
     if (!grid) {
         return <div> Loading...</div>;
