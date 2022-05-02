@@ -36,9 +36,11 @@ const Board = () => {
             }));
             setTimeSpent((_prevTimeSpent) => 0);
             console.log(1);
-            setInterval(() => {
-                setTimeSpent((prevTimeSpent) => prevTimeSpent + 1);
-            }, 1000);
+            if (firstTime) {
+                setInterval(() => {
+                    setTimeSpent((prevTimeSpent) => prevTimeSpent + 1);
+                }, 1000);
+            }
         }
         setGameStopped((_prevGameStopped) => false);
         freshBoard();
