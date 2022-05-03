@@ -6,8 +6,8 @@ import Cell from "./Cell";
 import LiveScoreBoard from "./LiveScoreBoard";
 import Menu from "./Menu";
 
-const NUM_OF_ROWS = 10;
-const NUM_OF_COLS = 10;
+const NUM_OF_ROWS = 15;
+const NUM_OF_COLS = 15;
 const NUM_OF_MINES = 10;
 
 const BASIC_REVEAL_TIMEOUT = 200;

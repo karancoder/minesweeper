@@ -13,7 +13,7 @@ const LiveScoreBoardContainer = styled.div`
 `;
 
 const LiveScoreItems = styled.div`
-    width: 200px;
+    width: 300px;
 `;
 
 const LiveScoreBoard = ({ tilesRemaining, timeSpent }) => {
