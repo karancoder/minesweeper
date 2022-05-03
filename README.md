@@ -1,3 +1,15 @@
+# Minesweeper
+
+## Samples
+
+![Start Game](./../minesweeper/sample_images/Start%20Game.png "Start Game")
+
+![In Progress](./../minesweeper/sample_images/In%20Progress.png "In Progress")
+
+![Won](./../minesweeper/sample_images/Won.png "Won")
+
+![Mine Found](./../minesweeper/sample_images/Mine%20Found.png "Mine Found")
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
