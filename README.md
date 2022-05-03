@@ -1,5 +1,9 @@
 # Minesweeper
 
+## Live Demo
+
+https://karan-s-minesweeper.herokuapp.com/
+
 ## Samples
 
 ![Start Game](./sample_images/Start%20Game.png "Start Game")
