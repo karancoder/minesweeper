@@ -6,11 +6,29 @@ import Cell from "./Cell";
 import LiveScoreBoard from "./LiveScoreBoard";
 import Menu from "./Menu";
 
+const NUM_OF_ROWS = 10;
+const NUM_OF_COLS = 10;
+const NUM_OF_MINES = 10;
+
+const BASIC_REVEAL_TIMEOUT = 200;
+
 const Grid = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+`;
+
+const GlassPane = styled.div`
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 5px;
+    display: flex;
+    font-weight: bold;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0rem 1rem;
+    margin: 2rem 3rem;
 `;
 
 const Board = () => {
@@ -23,15 +41,20 @@ const Board = () => {
     const [timeSpent, setTimeSpent] = useState(0);
     const [gameStopped, setGameStopped] = useState(true);
     const [firstTime, setFirstTime] = useState(true);
+    const [menuMessage, setMenuMessage] = useState("Welcome!");
 
     const startGame = () => {
         function freshBoard() {
-            const newBoard = createBoard(10, 10, 5);
+            const newBoard = createBoard(
+                NUM_OF_ROWS,
+                NUM_OF_COLS,
+                NUM_OF_MINES
+            );
             console.log(newBoard);
             setGrid((_prevBoard) => newBoard.board);
             setMines((_prevMines) => newBoard.mineLocation);
             setWinConditions((_prevWinConditions) => ({
-                numberOfUnrevealedCells: 10 * 10,
+                numberOfUnrevealedCells: NUM_OF_ROWS * NUM_OF_COLS,
                 timeoutDurationForWin: 1,
             }));
             setTimeSpent((_prevTimeSpent) => 0);
@@ -67,9 +90,10 @@ const Board = () => {
                 revealCellWithTimeout,
                 newBoard,
                 setFirstTime,
-                setGameStopped
+                setGameStopped,
+                setMenuMessage
             );
-            revealCellWithTimeout(newBoard, x, y, 200);
+            revealCellWithTimeout(newBoard, x, y, BASIC_REVEAL_TIMEOUT);
         } else {
             let resultFromBFS = revelationBFSFromGivesCell(
                 x,
@@ -94,10 +118,11 @@ const Board = () => {
         let numberOfMines = mines.length;
         if (winConditions.numberOfUnrevealedCells === numberOfMines) {
             setTimeout(() => {
-                alert("Won!");
+                // alert("Won!");
                 setFirstTime((_prevFirstTime) => false);
                 setGameStopped((_prevGameStopped) => true);
-            }, winConditions.timeoutDurationForWin * 200);
+                setMenuMessage((_prevMenuMessage) => "Won!");
+            }, winConditions.timeoutDurationForWin * BASIC_REVEAL_TIMEOUT);
         }
     }, [
         mines,
@@ -106,46 +131,72 @@ const Board = () => {
         winConditions.timeoutDurationForWin,
     ]);
 
-    if (gameStopped) {
-        return <Menu startGame={startGame} firstTime={firstTime} />;
-    } else {
-        if (!grid) {
-            return <div> Loading...</div>;
-        }
-        return (
-            <>
-                <LiveScoreBoard
-                    tilesRemaining={
-                        winConditions.numberOfUnrevealedCells - mines.length
-                    }
-                    timeSpent={timeSpent}
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                position: "relative",
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
+            }}
+        >
+            <GlassPane>
+                <h1 style={{ margin: "2rem" }}>Karan's Minesweeper</h1>
+            </GlassPane>
+            {gameStopped ? (
+                <Menu
+                    startGame={startGame}
+                    firstTime={firstTime}
+                    message={menuMessage}
                 />
+            ) : (
+                ""
+            )}
+            {grid.length === 0 ? (
+                gameStopped ? (
+                    ""
+                ) : (
+                    <div> Loading...</div>
+                )
+            ) : (
+                <>
+                    <LiveScoreBoard
+                        tilesRemaining={
+                            // winConditions.numberOfUnrevealedCells - mines.length
+                            mines.length
+                        }
+                        timeSpent={timeSpent}
+                    />
 
-                <Grid>
-                    {grid.map((singleRow, idx1) => {
-                        return (
-                            <div style={{ display: "flex" }} key={idx1}>
-                                {singleRow.map((cell, idx2) => {
-                                    return (
-                                        <div>
-                                            <Cell
-                                                details={cell}
-                                                updateFlag={updateFlag}
-                                                revealCellsStartingAtGivenCell={
-                                                    revealCellsStartingAtGivenCell
-                                                }
-                                                key={idx2}
-                                            />
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        );
-                    })}
-                </Grid>
-            </>
-        );
-    }
+                    <Grid>
+                        {grid.map((singleRow, idx1) => {
+                            return (
+                                <div style={{ display: "flex" }} key={idx1}>
+                                    {singleRow.map((cell, idx2) => {
+                                        return (
+                                            <div>
+                                                <Cell
+                                                    details={cell}
+                                                    updateFlag={updateFlag}
+                                                    revealCellsStartingAtGivenCell={
+                                                        revealCellsStartingAtGivenCell
+                                                    }
+                                                    key={idx2}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            );
+                        })}
+                    </Grid>
+                </>
+            )}
+        </div>
+    );
 };
 
 export default Board;
@@ -161,21 +212,28 @@ function revealAllMines(
     revealCellWithTimeout,
     newBoard,
     setFirstTime,
-    setGameStopped
+    setGameStopped,
+    setMenuMessage
 ) {
     let i = 0;
     for (let cell of mines) {
         i += 1;
         if (!grid[cell.x][cell.y].revealed) {
-            revealCellWithTimeout(newBoard, cell.x, cell.y, i * 200);
+            revealCellWithTimeout(
+                newBoard,
+                cell.x,
+                cell.y,
+                i * BASIC_REVEAL_TIMEOUT
+            );
         }
     }
     i += 1;
     setTimeout(() => {
-        alert("Mine Found. Game Over!");
+        // alert("Mine Found. Game Over!");
         setFirstTime((_prevFirstTime) => false);
         setGameStopped((_prevGameStopped) => true);
-    }, i * 200);
+        setMenuMessage((_prevMenuMessage) => "Mine Found. Game Over!");
+    }, i * BASIC_REVEAL_TIMEOUT);
 }
 
 function revelationBFSFromGivesCell(
@@ -203,7 +261,12 @@ function revelationBFSFromGivesCell(
         for (let cell of newFrontier) {
             if (!grid[cell.x][cell.y].revealed) {
                 numberOfNewRevealedCells += 1;
-                revealCellWithTimeout(newBoard, cell.x, cell.y, i * 200);
+                revealCellWithTimeout(
+                    newBoard,
+                    cell.x,
+                    cell.y,
+                    i * BASIC_REVEAL_TIMEOUT
+                );
             }
         }
         prevFrontier = newFrontier;
